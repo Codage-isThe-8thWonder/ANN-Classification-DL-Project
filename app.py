@@ -54,17 +54,21 @@ geo_encoded_df = pd.DataFrame(geo_encoded, columns=onehot_encoder_geo.get_featur
 # Combine one-hot encoded columns with input data
 input_data = pd.concat([input_data.reset_index(drop=True), geo_encoded_df], axis=1)
 
-# Scale the input data
-input_data_scaled = scaler.transform(input_data)
 
+# Predict button
+if st.button("Predict Churn"):
 
-# Predict churn
-prediction = model.predict(input_data_scaled)
-prediction_proba = prediction[0][0]
+    # Scale the input data
+    input_data_scaled = scaler.transform(input_data)
 
-st.write(f'Churn Probability: {prediction_proba:.2f}')
+    # Predict churn
+    prediction = model.predict(input_data_scaled)
+    prediction_proba = prediction[0][0]
 
-if prediction_proba > 0.5:
-    st.write('The customer is likely to churn.')
-else:
-    st.write('The customer is not likely to churn.')
+    st.subheader("Prediction Result")
+    st.write(f'Churn Probability: {prediction_proba:.2f}')
+
+    if prediction_proba > 0.5:
+        st.error("The customer is likely to churn.")
+    else:
+        st.success("The customer is not likely to churn.")
